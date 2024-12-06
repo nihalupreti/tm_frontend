@@ -12,7 +12,7 @@ export default function Login() {
     e.preventDefault();
 
     const formData = new FormData(formInput.current);
-    const data = Object.fromEntries(formData);
+    const data = Object.fromEntries(formData); //converting to json for sending to backend. alternatively, formData can be sent as well with content-type: "multipart/form-data"
 
     try {
       const response = await axios.post(
@@ -44,12 +44,16 @@ export default function Login() {
             <h1 className="text-xl font-bold leading-tight tracking-tight text-gray-900 md:text-2xl dark:text-white">
               Sign in to your account
             </h1>
-            <form className="space-y-4 md:space-y-6" onSubmit={handleSubmit}>
+            <form
+              className="space-y-4 md:space-y-6"
+              ref={formInput}
+              onSubmit={handleSubmit}
+            >
               {loginFormFields.map((field) => (
                 <FormElement
                   key={field.name + field.type}
                   label={field.label}
-                  name={field.fullName}
+                  name={field.name}
                   placeholder={field.placeholder}
                   type={field.type}
                 />
