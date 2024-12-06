@@ -20,19 +20,3 @@ export const filterTodo = selector({
     );
   },
 });
-
-export const completedTodos = selector({
-  key: "completedTodos",
-  get: ({ get }) => {
-    const todos = get(todoAtom);
-    return todos.filter((todo) => todo.status === true);
-  },
-});
-
-export const totalCompletedSelector = selector({
-  key: "totalCompletedSelector",
-  get: ({ get }) => {
-    const finishedTodos = get(completedTodos);
-    return finishedTodos.length;
-  },
-});

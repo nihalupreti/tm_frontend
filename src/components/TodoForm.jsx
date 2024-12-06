@@ -64,11 +64,11 @@ export default function TodoForm({ isOpen, closeModal }) {
       isOpen={isOpen}
       onRequestClose={closeModal}
       contentLabel="form modal"
-      ariaHideApp={false} // for accessibility
-      className="bg-white p-6 rounded-lg shadow-lg max-w-sm w-full absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2"
+      ariaHideApp={false}
+      className="bg-gray-700 p-6 rounded-lg shadow-lg max-w-sm w-full absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2"
       overlayClassName="fixed inset-0 bg-gray-500 bg-opacity-50"
     >
-      <form className="max-w-sm mx-auto" onSubmit={handleSubmit}>
+      <form className="max-w-sm mx-auto bg-gray-700" onSubmit={handleSubmit}>
         <FormInput
           label="Title"
           name="title"

@@ -1,14 +1,11 @@
 import SideBar from "./SideBar";
 import TaskCard from "./TaskCard";
-import { useSetRecoilState, useRecoilValue } from "recoil";
-import {
-  todoAtom,
-  filterTodo,
-  totalCompletedSelector,
-} from "../store/atoms/Todo";
+import { useSetRecoilState, useRecoilValue, useResetRecoilState } from "recoil";
+import { todoAtom, filterTodo } from "../store/atoms/Todo";
 import { useState } from "react";
 import axios from "axios";
 import { useEffect } from "react";
+import { jwtDecode } from "jwt-decode";
 import { format, isToday, isYesterday } from "date-fns";
 import AddTodo from "./AddTodo";
 import TodoForm from "./TodoForm";
@@ -24,12 +21,23 @@ function formateDate(dateString) {
 
 export default function DashBoard() {
   const filteredTodos = useRecoilValue(filterTodo);
+  const resetTodo = useResetRecoilState(todoAtom); // Reset state on unmount
   const setTodo = useSetRecoilState(todoAtom);
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const totalCompleted = useRecoilValue(totalCompletedSelector);
+
+  // Extract username from the JWT
+  const token = localStorage.getItem("authToken");
+  const decodedToken = token ? jwtDecode(token) : {};
+  const userName = decodedToken.userName || "Guest";
 
   const openModal = () => setIsModalOpen(true);
   const closeModal = () => setIsModalOpen(false);
+
+  useEffect(() => {
+    return () => {
+      resetTodo(); // Reset the todos state when the component unmounts
+    };
+  }, [resetTodo]);
 
   useEffect(() => {
     const fetchTodos = () => {
@@ -42,7 +50,7 @@ export default function DashBoard() {
           },
         })
         .then((response) => {
-          setTodo((prevTodos) => [...prevTodos, ...response.data]); // Update todos
+          setTodo((prevTodos) => [...prevTodos, ...response.data]);
         })
         .catch((error) => {
           console.error(
@@ -52,21 +60,21 @@ export default function DashBoard() {
         });
     };
 
-    fetchTodos(); // Call the fetch function
-  }, []);
+    fetchTodos();
+  }, [setTodo]);
 
   return (
     <>
       <div className="flex">
-        <SideBar name={"Nihal upreti"} pendingTodo={totalCompleted} />
+        <SideBar name={userName} />
         <div className="bg-gray100 flex-1 flex-column">
           <AddTodo openModal={openModal} />
           <TodoForm isOpen={isModalOpen} closeModal={closeModal} />
-          {filteredTodos.map((todo) => {
+          {filteredTodos.map((todo, index) => {
             return (
               <TaskCard
                 dueDate={formateDate(todo.dueDate)}
-                key={todo._id}
+                key={todo._id + (index + 1)}
                 id={todo._id}
                 title={todo.title}
                 description={todo.description}

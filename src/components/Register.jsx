@@ -1,66 +1,40 @@
-import { useState } from "react";
+import { useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
+import { registerFormFields } from "../formFileds";
+import FormElement from "./FormElement";
 
 export default function Register() {
-  const [userForm, setUserForm] = useState({
-    fullName: "",
-    userName: "",
-    email: "",
-    password: "",
-    confirmPassword: "",
-  });
+  const userInput = useRef();
   const navigate = useNavigate();
 
-  const handleChange = (e) => {
-    const { name, value } = e.target;
-    setUserForm((prevForm) => ({
-      ...prevForm,
-      [name]: value,
-    }));
-
-    // Clear error when user types again in password or confirmPassword fields
-    if (name === "confirmPassword" || name === "password") {
-      // This is optional since we no longer store errors
-    }
-  };
-
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
 
-    // Check if passwords match
-    if (userForm.password !== userForm.confirmPassword) {
+    const formData = new FormData(userInput.current);
+    const data = Object.fromEntries(formData);
+
+    if (data.password !== data.confirmPassword) {
       alert("Passwords do not match!");
       return;
     }
 
-    // API call
-    axios
-      .post("http://localhost:3000/api/user/signup", {
-        fullName: userForm.fullName,
-        userName: userForm.userName,
-        password: userForm.password,
-        email: userForm.email,
-      })
-      .then((response) => {
-        console.log("Server Response:", response.data);
-
-        // Save the JWT token in localStorage
-        localStorage.setItem("authToken", response.data.token);
-
-        // Navigate the user to the dashboard
-        navigate("/dashboard");
-      })
-      .catch((error) => {
-        console.error("Error:", error);
-
-        // Directly display the error message
-        if (error.response) {
-          alert(error.response.data.message || "Something went wrong!");
-        } else {
-          alert("Network error or server not reachable!");
-        }
-      });
+    try {
+      const response = await axios.post(
+        "http://localhost:3000/api/user/signup",
+        data
+      );
+      console.log("register", response.data);
+      localStorage.setItem("authToken", response.data.token); // Save the JWT token in localStorage
+      navigate("/dashboard"); // Navigate the user to the dashboard
+    } catch (error) {
+      console.error("Error:", error);
+      if (error.response) {
+        alert(error.response.data.message || "Something went wrong!");
+      } else {
+        alert("Network error or server not reachable!");
+      }
+    }
   };
 
   return (
@@ -75,73 +49,15 @@ export default function Register() {
               Create an account
             </h1>
             <form className="space-y-4 md:space-y-6" onSubmit={handleSubmit}>
-              <div>
-                <label className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
-                  Full Name
-                </label>
-                <input
-                  type="text"
-                  name="fullName"
-                  className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-                  placeholder="Nihal Upreti"
-                  required
-                  onChange={handleChange}
+              {registerFormFields.map((field) => (
+                <FormElement
+                  key={field.name + field.type}
+                  label={field.label}
+                  name={field.fullName}
+                  placeholder={field.placeholder}
+                  type={field.type}
                 />
-              </div>
-              <div>
-                <label className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
-                  Username
-                </label>
-                <input
-                  type="text"
-                  name="userName"
-                  className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-                  placeholder="Username"
-                  required
-                  onChange={handleChange}
-                />
-              </div>
-
-              <div>
-                <label className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
-                  Email
-                </label>
-                <input
-                  type="email"
-                  name="email"
-                  className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-                  placeholder="abc@gmail.com"
-                  required
-                  onChange={handleChange}
-                />
-              </div>
-
-              <div>
-                <label className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
-                  Password
-                </label>
-                <input
-                  type="password"
-                  name="password"
-                  placeholder="••••••••"
-                  className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-                  required
-                  onChange={handleChange}
-                />
-              </div>
-              <div>
-                <label className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
-                  Confirm Password
-                </label>
-                <input
-                  type="password"
-                  name="confirmPassword"
-                  placeholder="••••••••"
-                  className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-                  required
-                  onChange={handleChange}
-                />
-              </div>
+              ))}
               <button
                 type="submit"
                 className="w-full text-white bg-primary-600 hover:bg-primary-700 focus:ring-4 focus:outline-none focus:ring-primary-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800"
@@ -151,7 +67,7 @@ export default function Register() {
               <p className="text-sm font-light text-gray-500 dark:text-gray-400">
                 Already have an account?{" "}
                 <a
-                  className="font-medium text-primary-600 hover:underline dark:text-primary-500"
+                  className="font-medium text-primary-600 hover:underline dark:text-primary-500 hover:cursor-pointer"
                   onClick={() => navigate("/signin")}
                 >
                   Login here

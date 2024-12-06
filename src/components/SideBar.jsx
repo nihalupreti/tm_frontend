@@ -4,7 +4,7 @@ import profileImage from "../assets/profile.jpg";
 import { useLocation } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
 
-export default function SideBar({ name, pendingTodo }) {
+export default function SideBar({ name }) {
   const setFilter = useSetRecoilState(filterAtom);
   const location = useLocation(); // Get current route
   const navigate = useNavigate();
@@ -97,12 +97,8 @@ export default function SideBar({ name, pendingTodo }) {
                   strokeLinejoin="round"
                   d="m16.862 4.487 1.687-1.688a1.875 1.875 0 1 1 2.652 2.652L6.832 19.82a4.5 4.5 0 0 1-1.897 1.13l-2.685.8.8-2.685a4.5 4.5 0 0 1 1.13-1.897L16.863 4.487Zm0 0L19.5 7.125"
                 />
-              </svg>
-
+              </svg>{" "}
               <span className="flex-1 ms-3 whitespace-nowrap">completed</span>
-              <span className="inline-flex items-center justify-center w-3 h-3 p-3 ms-3 text-sm font-medium text-blue-800 bg-blue-100 rounded-full dark:bg-blue-900 dark:text-blue-300">
-                {pendingTodo}
-              </span>
             </a>
           </li>
         </ul>

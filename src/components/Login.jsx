@@ -1,49 +1,36 @@
-import { useState } from "react";
+import { useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
+import { loginFormFields } from "../formFileds";
+import FormElement from "./FormElement";
 
 export default function Login() {
-  const [userForm, setUserForm] = useState({
-    userName: "",
-    password: "",
-  });
-
+  const formInput = useRef();
   const navigate = useNavigate();
 
-  const handleChange = (e) => {
-    const { name, value } = e.target;
-    setUserForm((prevForm) => ({
-      ...prevForm,
-      [name]: value,
-    }));
-  };
-
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
 
-    axios
-      .post("http://localhost:3000/api/user/signin", {
-        userName: userForm.userName,
-        password: userForm.password,
-      })
-      .then((response) => {
-        console.log("Server Response:", response.data);
+    const formData = new FormData(formInput.current);
+    const data = Object.fromEntries(formData);
 
-        // Save the JWT token in localStorage
-        localStorage.setItem("authToken", response.data.token);
+    try {
+      const response = await axios.post(
+        "http://localhost:3000/api/user/signin",
+        data
+      );
+      console.log("Server Response:", response.data);
+      localStorage.setItem("authToken", response.data.token);
 
-        // Navigate the user to the dashboard
-        navigate("/dashboard");
-      })
-      .catch((error) => {
-        console.error("Error:", error);
-        // Directly display the error message
-        alert(
-          error.response
-            ? error.response.data.message || "Something went wrong!"
-            : "Network error or server not reachable!"
-        );
-      });
+      navigate("/dashboard");
+    } catch (error) {
+      console.error("Error:", error);
+      alert(
+        error.response
+          ? error.response.data.message || "Something went wrong!"
+          : "Network error or server not reachable!"
+      );
+    }
   };
 
   return (
@@ -58,32 +45,15 @@ export default function Login() {
               Sign in to your account
             </h1>
             <form className="space-y-4 md:space-y-6" onSubmit={handleSubmit}>
-              <div>
-                <label className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
-                  Username
-                </label>
-                <input
-                  type="text"
-                  name="userName"
-                  className="bg-gray-50 border border-gray-300 text-gray-900 rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-                  placeholder="Username"
-                  onChange={handleChange}
-                  required
+              {loginFormFields.map((field) => (
+                <FormElement
+                  key={field.name + field.type}
+                  label={field.label}
+                  name={field.fullName}
+                  placeholder={field.placeholder}
+                  type={field.type}
                 />
-              </div>
-              <div>
-                <label className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
-                  Password
-                </label>
-                <input
-                  type="password"
-                  name="password"
-                  placeholder="••••••••"
-                  className="bg-gray-50 border border-gray-300 text-gray-900 rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-                  required
-                  onChange={handleChange}
-                />
-              </div>
+              ))}
               <button
                 type="submit"
                 className="w-full text-white bg-primary-600 hover:bg-primary-700 focus:ring-4 focus:outline-none focus:ring-primary-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800"
@@ -93,7 +63,7 @@ export default function Login() {
               <p className="text-sm font-light text-gray-500 dark:text-gray-400">
                 Don’t have an account yet?{" "}
                 <a
-                  className="font-medium text-primary-600 hover:underline dark:text-primary-500"
+                  className="font-medium text-primary-600 hover:underline dark:text-primary-500 hover:cursor-pointer"
                   onClick={() => navigate("/signup")}
                 >
                   Sign up
