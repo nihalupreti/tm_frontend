@@ -1,11 +1,9 @@
-import SideBar from "./SideBar";
 import TaskCard from "./TaskCard";
 import { useSetRecoilState, useRecoilValue, useResetRecoilState } from "recoil";
 import { todoAtom, filterTodo } from "../store/atoms/Todo";
 import { useState } from "react";
 import axios from "axios";
 import { useEffect } from "react";
-import { jwtDecode } from "jwt-decode";
 import { format, isToday, isYesterday } from "date-fns";
 import AddTodo from "./AddTodo";
 import TodoForm from "./TodoForm";
@@ -25,11 +23,6 @@ export default function DashBoard() {
   const setTodo = useSetRecoilState(todoAtom);
   const [isModalOpen, setIsModalOpen] = useState(false);
 
-  // Extract username from the JWT
-  const token = localStorage.getItem("authToken");
-  const decodedToken = token ? jwtDecode(token) : {};
-  const userName = decodedToken.userName || "Guest";
-
   const openModal = () => setIsModalOpen(true);
   const closeModal = () => setIsModalOpen(false);
 
@@ -40,24 +33,16 @@ export default function DashBoard() {
   }, [resetTodo]);
 
   useEffect(() => {
-    const fetchTodos = () => {
-      const token = localStorage.getItem("authToken"); // Retrieve JWT token from localStorage
+    const fetchTodos = async () => {
+      const token = localStorage.getItem("authToken");
 
-      axios
-        .get("http://localhost:3000/api/task/todos", {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        })
-        .then((response) => {
-          setTodo((prevTodos) => [...prevTodos, ...response.data]);
-        })
-        .catch((error) => {
-          console.error(
-            "Error fetching todos:",
-            error.response?.status || error.message
-          );
-        });
+      const response = await axios.get("http://localhost:3000/api/task/todos", {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      setTodo((prevTodos) => [...prevTodos, ...response.data.data]);
     };
 
     fetchTodos();
@@ -66,7 +51,7 @@ export default function DashBoard() {
   return (
     <>
       <div className="flex">
-        <SideBar name={userName} />
+        {/* <SideBar name={userName} /> */}
         <div className="bg-gray100 flex-1 flex-column">
           <AddTodo openModal={openModal} />
           <TodoForm isOpen={isModalOpen} closeModal={closeModal} />

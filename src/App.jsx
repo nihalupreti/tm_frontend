@@ -10,6 +10,7 @@ import Login from "./components/Login";
 import Register from "./components/Register";
 import DashBoard from "./components/DashBoard";
 import CompletedTodos from "./components/CompletedTodos";
+import SideBar from "./components/SideBar";
 
 function App() {
   return (
@@ -19,8 +20,10 @@ function App() {
         <Route path="/" element={<NavigateBasedOnAuth />} />
         <Route path="/signin" element={<Login />} />
         <Route path="/signup" element={<Register />} />
-        <Route path="/dashboard" element={<DashBoard />} />
-        <Route path="/completed" element={<CompletedTodos />} />
+        <Route element={<SideBar name="Nihal Upreti" />}>
+          <Route path="/dashboard" element={<DashBoard />} />
+          <Route path="/completed" element={<CompletedTodos />} />
+        </Route>
       </Routes>
     </BrowserRouter>
   );

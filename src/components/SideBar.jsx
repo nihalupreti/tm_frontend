@@ -3,10 +3,11 @@ import { filterAtom } from "../store/atoms/Todo";
 import profileImage from "../assets/profile.jpg";
 import { useLocation } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
+import { Outlet } from "react-router-dom";
 
 export default function SideBar({ name }) {
   const setFilter = useSetRecoilState(filterAtom);
-  const location = useLocation(); // Get current route
+  const location = useLocation();
   const navigate = useNavigate();
 
   const handleChange = (e) => {
@@ -103,6 +104,7 @@ export default function SideBar({ name }) {
           </li>
         </ul>
       </div>
+      <Outlet />
     </div>
   );
 }
