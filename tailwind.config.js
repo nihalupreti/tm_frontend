@@ -17,6 +17,13 @@ export default {
           900: "#1e3a8a",
           950: "#172554",
         },
+        smokewhite: "#F5F5F5",
+        lowtext: "#D58D49",
+        lowbg: "#dfa87433",
+        fontgray: "#787486",
+      },
+      fontFamily: {
+        inter: ["Inter", "sans-serif"],
       },
     },
   },
