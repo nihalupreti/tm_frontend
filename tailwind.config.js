@@ -21,6 +21,11 @@ export default {
         lowtext: "#D58D49",
         lowbg: "#dfa87433",
         fontgray: "#787486",
+        fontheading: "#0D062D",
+        hightext: "#D8727D",
+        highbg: "#d8727d1a",
+        mediumtext: "#D58D49",
+        mediumbg: "#dfa87433",
       },
       fontFamily: {
         inter: ["Inter", "sans-serif"],

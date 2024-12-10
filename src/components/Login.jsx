@@ -1,34 +1,26 @@
 import { useRef } from "react";
 import { useNavigate } from "react-router-dom";
-import axios from "axios";
+import { useMutation } from "@tanstack/react-query";
+
+import { postForm } from "../util/http";
 import { loginFormFields } from "../formFileds";
 import FormElement from "./FormElement";
 
 export default function Login() {
   const formInput = useRef();
   const navigate = useNavigate();
+  const { mutate, isPending, isError, error } = useMutation({
+    mutationFn: postForm,
+  });
 
   const handleSubmit = async (e) => {
     e.preventDefault();
 
     const formData = new FormData(formInput.current);
     const data = Object.fromEntries(formData); //converting to json for sending to backend. alternatively, formData can be sent as well with content-type: "multipart/form-data"
-
-    try {
-      const response = await axios.post(
-        "http://localhost:3000/api/user/signin",
-        data
-      );
-      localStorage.setItem("authToken", response.data.data.token);
-
+    mutate(data);
+    if (!isError) {
       navigate("/dashboard");
-    } catch (error) {
-      console.error("Error:", error);
-      alert(
-        error.response
-          ? error.response.data.message || "Something went wrong!"
-          : "Network error or server not reachable!"
-      );
     }
   };
 

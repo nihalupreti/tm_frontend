@@ -1,8 +1,8 @@
-export default function AddTodo({ openModal }) {
+export default function AddTask({ openModal }) {
   return (
     <>
       <div
-        className="bg-gray-100 p-3 rounded-md border-2 border-gray-400 border-dotted flex mx-auto w-3/4 mb-10 mt-4 hover:cursor-pointer"
+        className="bg-smokewhite p-3 rounded-md border-2 border-gray-400 border-dotted flex mx-auto w-full mb-10 mt-4 hover:cursor-pointer"
         onClick={openModal}
       >
         <svg

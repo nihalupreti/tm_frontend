@@ -1,7 +1,7 @@
 export default function TaskCard({ title, priority, Description }) {
   return (
     <>
-      <div className="flex-reverse rounded-lg w-80 bg-white p-5">
+      <div className="flex-reverse rounded-lg w-90 bg-white p-5">
         <div className="flex justify-between">
           <div className="text-xs font-medium rounded-md bg-lowbg inline-block p-1 text-lowtext">
             {priority}
