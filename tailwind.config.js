@@ -24,8 +24,8 @@ export default {
         fontheading: "#0D062D",
         hightext: "#D8727D",
         highbg: "#d8727d1a",
-        mediumtext: "#D58D49",
-        mediumbg: "#dfa87433",
+        mediumtext: " #ff6e14 ",
+        mediumbg: "#f78b392b",
       },
       fontFamily: {
         inter: ["Inter", "sans-serif"],

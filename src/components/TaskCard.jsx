@@ -1,9 +1,19 @@
-export default function TaskCard({ title, priority, Description }) {
+export default function TaskCard({ title, priority, description }) {
+  const priorityStyles = {
+    low: { bg: "bg-lowbg", text: "text-lowtext" },
+    medium: { bg: "bg-mediumbg", text: "text-mediumtext" },
+    high: { bg: "bg-highbg", text: "text-hightext" },
+  };
+
+  const { bg: priorityBgColor, text: priorityTextColor } =
+    priorityStyles[priority];
   return (
     <>
-      <div className="flex-reverse rounded-lg w-90 bg-white p-5">
+      <div className="flex-reverse rounded-lg  bg-white p-5 mb-5">
         <div className="flex justify-between">
-          <div className="text-xs font-medium rounded-md bg-lowbg inline-block p-1 text-lowtext">
+          <div
+            className={`text-xs font-medium rounded-md inline-block p-1 ${priorityBgColor} ${priorityTextColor}  `}
+          >
             {priority}
           </div>
           <svg
@@ -22,7 +32,7 @@ export default function TaskCard({ title, priority, Description }) {
           </svg>
         </div>
         <h2 className="font-semibold text-lg">{title}</h2>
-        <p className="text-xs font-normal text-fontgray">{Description}</p>
+        <p className="text-xs font-normal text-fontgray">{description}</p>
       </div>
     </>
   );

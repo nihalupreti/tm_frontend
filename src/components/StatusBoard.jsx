@@ -11,18 +11,14 @@ export default function StatusBoard({ boardName }) {
     queryFn: fetchTasks,
   });
 
-  const filterData = (boardName) => {
-    switch (boardName) {
-      case "Todos":
-        return data.filter((task) => task.status === "scheduled");
-      case "ongoing":
-        return data.filter((task) => task.status === "ongoing");
-      case "completed":
-        return data.filter((task) => task.status === "completed");
-    }
+  const statusMap = {
+    Todos: "scheduled",
+    ongoing: "ongoing",
+    completed: "completed",
   };
 
-  const filteredData = filterData(boardName) || [];
+  const filteredData =
+    data?.filter((task) => task.status === statusMap[boardName]) || [];
 
   return (
     <>
@@ -34,8 +30,8 @@ export default function StatusBoard({ boardName }) {
             <TaskCard
               key={task._id}
               title={task.title}
-              priority="low"
-              Description={task.description}
+              priority={task.priority}
+              description={task.description}
             />
           ))
         )}

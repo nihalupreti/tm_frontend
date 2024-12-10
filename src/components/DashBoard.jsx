@@ -6,9 +6,11 @@ export default function DashBoard() {
     <>
       <div className="flex-reverse w-full m-10">
         <AddTask />
-        <StatusBoard boardName="Todos" />
-        <StatusBoard boardName="ongoing" />
-        <StatusBoard boardName="Due" />
+        <div className="flex justify-between">
+          <StatusBoard boardName="Todos" />
+          <StatusBoard boardName="ongoing" />
+          <StatusBoard boardName="completed" />
+        </div>
         <div className="flex justify-between "></div>
       </div>
     </>
