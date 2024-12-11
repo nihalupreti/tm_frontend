@@ -9,9 +9,9 @@ export async function fetchTasks() {
   return response.data.data;
 }
 
-export async function postForm(data) {
+export async function postForm({ data, endPoint }) {
   const response = await axios.post(
-    `${import.meta.env.VITE_API_URL}user/signin`,
+    `${import.meta.env.VITE_API_URL}${endPoint}`,
     data,
     { withCredentials: true }
   );

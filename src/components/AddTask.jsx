@@ -1,4 +1,14 @@
-export default function AddTask({ openModal }) {
+import { useState } from "react";
+import { createPortal } from "react-dom";
+
+import TodoForm from "./TodoForm";
+
+export default function AddTask() {
+  const [isModalOpen, setIsModalOpen] = useState(false);
+
+  const openModal = () => setIsModalOpen(true);
+  const closeModal = () => setIsModalOpen(false);
+
   return (
     <>
       <div
@@ -21,6 +31,10 @@ export default function AddTask({ openModal }) {
         </svg>
         New Task
       </div>
+      {createPortal(
+        <TodoForm isOpen={isModalOpen} closeModal={closeModal} />,
+        document.getElementById("modal")
+      )}
     </>
   );
 }

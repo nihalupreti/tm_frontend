@@ -18,7 +18,7 @@ export default function Login() {
 
     const formData = new FormData(formInput.current);
     const data = Object.fromEntries(formData); //converting to json for sending to backend. alternatively, formData can be sent as well with content-type: "multipart/form-data"
-    mutate(data);
+    mutate({ data, endPoint: "user/signin" });
     if (!isError) {
       navigate("/dashboard");
     }
